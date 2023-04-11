@@ -6,8 +6,8 @@ import {
   View,
   ImageBackground,
   TextInput,
-  Button,
-  TouchableOpacity
+  TouchableOpacity,
+  Platform
  } from 'react-native';
 
 import  RegistrationScreen from './Screens/RegistrationScreen.jsx';
@@ -16,6 +16,7 @@ import LoginScreen from './Screens/LoginScreen.jsx';
 
 
 export default function App() {
+  console.log(Platform.OS)
   return (    
       <View style={styles.container}>
         <ImageBackground 
@@ -56,8 +57,8 @@ const styles = StyleSheet.create({
   image: {
     flex: 1,
     resizeMode: "cover",
-    justifyContent: 'flex-end',
-    
+    justifyContent: 'center',
+
     // alignItems: 'center',
   },
 
@@ -84,19 +85,51 @@ const styles = StyleSheet.create({
 
   },
 
-  primaryButton: {     
-    backgroundColor:'#FF6C00',
+  primaryButton: { 
     height: 51,
-    borderRadius: 100,
+    borderRadius: 100, 
     justifyContent: 'center',
     alignItems: 'center',
+    ...Platform.select ({
+      ios: { 
+        backgroundColor: 'transparent',
+        borderColor: '#ffffff'
+
+      },
+      android: {
+        backgroundColor: '#FF6C00',
+        borderColor: 'transparent'
+
+      },
+      default:{
+        backgroundColor: '#FF6C00',
+        borderColor: 'transparent'
+
+      }
+
+    })   
+    
    
   },
 
   textButton: {
-    color: '#FFFFFF',
     fontSize: 16,
     fontWeight: 400,
+    ...Platform.select ({
+      ios: {
+        color:'#f0f800'
+      },
+      android: {
+        color: '#ffffff' 
+      },
+      default: {
+        color: '#ffffff'
+
+      }
+     
+
+    })
+     
   }
 
 });
