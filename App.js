@@ -1,4 +1,6 @@
-import React from 'react';
+import React, {useState} from 'react';
+import * as Font from 'expo-font';
+import { AppLoading } from 'expo';
 // import { StatusBar } from 'expo-status-bar';
 import { 
   StyleSheet,
@@ -7,44 +9,111 @@ import {
   ImageBackground,
   TextInput,
   TouchableOpacity,
-  Platform
+  Platform,
+  KeyboardAvoidingView,
+  Keyboard,
+  TouchableWithoutFeedback,
  } from 'react-native';
 
-import  RegistrationScreen from './Screens/RegistrationScreen.jsx';
-import LoginScreen from './Screens/LoginScreen.jsx';
+ const loadApplication = async () => {
+  await Font.loadAsync({
+    'Roboto-Black': require('./assets/Fonts/Roboto-Bold.ttf'),
+  });
+ };
+
+
+
+
+ const initialState= {
+  login: '',
+  mail: '',
+  password: ''
+ }
 
 
 
 export default function App() {
   console.log(Platform.OS)
-  return (    
-      <View style={styles.container}>
-        <ImageBackground 
-          style={styles.image}
-          source={require('./img/Photo BG.jpg')}>
+  const [isShowKeyboard, setIsShowKeyboard] = useState(true);
+  const [state, setState] = useState(initialState);
+  const [iasReady, setIasReady] = useState(false);
 
-          <View style={styles.form}>
-            <View>
-                <TextInput style={styles.input} textAlign={"left"}
-                      placeholder='Логин'/>
-            </View>
-            <View style={{ marginTop: 16 }}>
-                <TextInput style={styles.input} textAlign={"left"}
-                      placeholder='Адрес электронной почты'/>
-            </View>
-            <View style={{ marginTop: 16 }}>
-                <TextInput style={styles.input} textAlign={"left"} secureTextEntry={true}
-                      placeholder='Пароль'/>
-            </View>
-            <View style={{ marginTop: 43 }}>
-                <TouchableOpacity activeOpacity={0.7} style={styles.primaryButton} >
-                  <Text style={styles.textButton}>Зарегистрироваться</Text>
-                </TouchableOpacity>              
-            </View>
-           
-          </View>       
-        </ImageBackground>
+  const keyboardHide = () => {
+    setIsShowKeyboard(false);
+    Keyboard.dismiss();
+    console.log(state);
+    setState(initialState);
+  };
+
+  if(!iasReady){
+    return (
+      <AppLoading
+        startAsync={loadApplication} 
+        onFinish={() => setIasReady(true)}
+        onError={console.warn}
+      />
+    );
+  }
+
+  return (
+    <TouchableWithoutFeedback onPress={keyboardHide}>    
+      <View style={styles.container}>
+       
+            <ImageBackground 
+              style={styles.image}
+              source={require('./assets/img/Photo-BG.jpg')}>
+                  <KeyboardAvoidingView  
+                    behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+                    >
+                    <View style={{...styles.form, marginBottom: isShowKeyboard ? 20 : 86
+                    }}>
+                        <View style={styles.header}>
+                          <Text style={styles.textHeader}>
+                              Регистрация
+                          </Text>
+                        </View>
+                        <View>
+                            <TextInput style={styles.input}
+                                  textAlign={"left"}                              
+                                  placeholder='Логин'
+                                  onFocus={() => setIsShowKeyboard(true)}
+                                  value={state.login}
+                                  onChangeText={(value) => setState((prevState) => ({...prevState, login: value}) )} 
+                            />
+                        </View>
+                        <View style={{ marginTop: 16 }}>
+                            <TextInput style={styles.input} textAlign={"left"}
+                                  placeholder='Адрес электронной почты'
+                                  onFocus={() => setIsShowKeyboard(true)}
+                                  value={state.mail}
+                                  onChangeText={(value) => setState((prevState) => ({...prevState, mail: value}) )}  
+                                  />
+                        </View>
+                        <View style={{ marginTop: 16 }}>
+                            <TextInput style={styles.input} textAlign={"left"} 
+                                  placeholder='Пароль'
+                                  secureTextEntry={true}
+                                  onFocus={() => setIsShowKeyboard(true)}
+                                  value={state.password}
+                                  onChangeText={(value) => setState((prevState) => ({...prevState, password: value}) )}                              
+                            />
+                        </View>
+                        <View style={{ marginTop: 43 }}>
+                            <TouchableOpacity 
+                            activeOpacity={0.8} 
+                            style={styles.primaryButton} 
+                            onPress={keyboardHide}>
+                              <Text style={styles.textButton}>Зарегистрироваться</Text>
+                            </TouchableOpacity>              
+                        </View>    
+                                                  
+                    </View> 
+                  </KeyboardAvoidingView>
+                        
+            </ImageBackground>
+         
       </View>
+      </TouchableWithoutFeedback>   
   );
 }
 
@@ -57,7 +126,7 @@ const styles = StyleSheet.create({
   image: {
     flex: 1,
     resizeMode: "cover",
-    justifyContent: 'center',
+    justifyContent: "center",
 
     // alignItems: 'center',
   },
@@ -72,11 +141,12 @@ const styles = StyleSheet.create({
     height: 50,
     padding: 16, 
     
-    placeholderTextColor: '#BDBDBD', 
+    placeholderTextColor: '#BDBDBD'
   },
 
   form: {
     marginHorizontal: 16,
+    // marginBottom: 32   
 
 
   },
@@ -87,9 +157,11 @@ const styles = StyleSheet.create({
 
   primaryButton: { 
     height: 51,
+    borderWidth: 1,
     borderRadius: 100, 
     justifyContent: 'center',
     alignItems: 'center',
+    // marginHorizontal: 16,
     ...Platform.select ({
       ios: { 
         backgroundColor: 'transparent',
@@ -105,9 +177,9 @@ const styles = StyleSheet.create({
         backgroundColor: '#FF6C00',
         borderColor: 'transparent'
 
-      }
+      },
 
-    })   
+    }),   
     
    
   },
@@ -130,6 +202,20 @@ const styles = StyleSheet.create({
 
     })
      
-  }
+  },
+
+  header: {
+
+  },
+  textHeader: {
+    color: '#212121',
+    fontSize: 30,
+    fontWeight: 500,
+    textAlign: 'center',
+    marginBottom: 33,
+    fontFamily: 'Roboto-Black',
+    
+
+  },
 
 });
