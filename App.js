@@ -1,241 +1,43 @@
-import React, {useState, useEffect} from 'react';
+import { useEffect } from "react";
 
-import { 
-  StyleSheet,
-  Text,
-  View,
-  ImageBackground,
-  TextInput,
-  TouchableOpacity,
-  Platform,
-  KeyboardAvoidingView,
-  Keyboard,
-  TouchableWithoutFeedback,
-  Dimensions,
- } from 'react-native';
+import { useFonts } from "expo-font";
+import * as SplashScreen from "expo-splash-screen";
 
-import * as Font from 'expo-font';
-import { AppLoading } from 'expo';
+import LoginScreen from "./Screens/LoginScreen.jsx";
+import RegistrationScreen from "./Screens/RegistrationScreen.jsx";
 
-const initialState= {
-  login: '',
-  mail: '',
-  password: ''
- }
-
- const loadApplication = async () => {
-  await Font.loadAsync({
-    'Roboto-Black': require('./assets/Fonts/Roboto-Bold.ttf'),
-  });
- };
-
-
-
-
-
-
+import { fonts } from "./.expo/utils/fonts";
+import { View } from "react-native-web";
 
 export default function App() {
-  console.log(Platform.OS);
-  const [isShowKeyboard, setIsShowKeyboard] = useState(false);
-  const [state, setState] = useState(initialState);
-  const [iasReady, setIasReady] = useState(false);
 
-  const [dimensions, setDimensions] = useState(
-    Dimensions.get('window').width - 20 * 2
-  );
+	const [fontsLoaded] = useFonts(fonts);
+	useEffect(() => {
+		async function prepare() {
+			await SplashScreen.preventAutoHideAsync();
+		}
+		prepare();
+	}, []);
+	if (!fontsLoaded) {
+		return undefined;
+	} else {
+		SplashScreen.hideAsync();
+	}
 
-  useEffect(() => {
-    const onChange = () => {
-      const width = Dimensions.get("window").width - 20 * 2;
+	
+	return (
+       <>
+      <View>
+	  {/* <LoginScreen/>; */}
+      <RegistrationScreen/>;
 
-      setDimensions(width);
-    };
-    Dimensions.addEventListener("change", onChange);
-    return () => {
-      Dimensions.removeEventListener("change", onChange);
-    };
-  }, []);
-
-  const keyboardHide = () => {
-    setIsShowKeyboard(false);
-    Keyboard.dismiss();
-    console.log(state);
-    setState(initialState);
-  };
-
-  if(iasReady){
-    return (
-      <AppLoading
-        startAsync={loadApplication} 
-        onFinish={() => setIasReady(true)}
-        onError={console.warn}
-      />
-    );
-  }
-
-  return (
-    <TouchableWithoutFeedback onPress={keyboardHide}>    
-      <View style={styles.container}>
-       
-            <ImageBackground 
-              style={styles.image}
-              source={require('./assets/img/Photo-BG.jpg')}>
-                  <KeyboardAvoidingView  
-                    behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
-                    >
-                    <View style={{...styles.form, marginBottom: isShowKeyboard ? 20 : 86,
-                           width: dimensions,
-                    }}>
-                        <View style={styles.header}>
-                          <Text style={styles.textHeader}>
-                              Регистрация
-                          </Text>
-                        </View>
-                        <View>
-                            <TextInput style={styles.input}
-                                  textAlign={"left"}                              
-                                  placeholder='Логин'
-                                  onFocus={() => setIsShowKeyboard(true)}
-                                  value={state.login}
-                                  onChangeText={(value) => setState((prevState) => ({...prevState, login: value}) )} 
-                            />
-                        </View>
-                        <View style={{ marginTop: 16 }}>
-                            <TextInput style={styles.input} textAlign={"left"}
-                                  placeholder='Адрес электронной почты'
-                                  onFocus={() => setIsShowKeyboard(true)}
-                                  value={state.mail}
-                                  onChangeText={(value) => setState((prevState) => ({...prevState, mail: value}) )}  
-                                  />
-                        </View>
-                        <View style={{ marginTop: 16 }}>
-                            <TextInput style={styles.input} textAlign={"left"} 
-                                  placeholder='Пароль'
-                                  secureTextEntry={true}
-                                  onFocus={() => setIsShowKeyboard(true)}
-                                  value={state.password}
-                                  onChangeText={(value) => setState((prevState) => ({...prevState, password: value}) )}                              
-                            />
-                        </View>
-                        <View style={{ marginTop: 43 }}>
-                            <TouchableOpacity 
-                            activeOpacity={0.8} 
-                            style={styles.primaryButton} 
-                            onPress={keyboardHide}>
-                              <Text style={styles.textButton}>Зарегистрироваться</Text>
-                            </TouchableOpacity>              
-                        </View>    
-                                                  
-                    </View> 
-                  </KeyboardAvoidingView>
-                        
-            </ImageBackground>
-         
-      </View>
-      </TouchableWithoutFeedback>   
-  );
+	  </View> 
+      
+		</>
+				
+	);
+	
 }
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#fff',
-    
-  },
-  image: {
-    flex: 1,
-    resizeMode: "cover",
-    justifyContent: "center",
-
-    // alignItems: 'center',
-  },
 
 
-
-  input: {
-    borderWidth: 1,
-    borderColor:"#E8E8E8",
-    backgroundColor:'#F6F6F6',
-    borderRadius: 8,
-    height: 50,
-    padding: 16, 
-    
-    placeholderTextColor: '#BDBDBD'
-  },
-
-  form: {
-    marginHorizontal: 16,
-    // marginBottom: 32   
-
-
-  },
- 
-  inputTitle: {
-
-  },
-
-  primaryButton: { 
-    height: 51,
-    borderWidth: 1,
-    borderRadius: 100, 
-    justifyContent: 'center',
-    alignItems: 'center',
-    // marginHorizontal: 16,
-    ...Platform.select ({
-      ios: { 
-        backgroundColor: 'transparent',
-        borderColor: '#ffffff'
-
-      },
-      android: {
-        backgroundColor: '#FF6C00',
-        borderColor: 'transparent'
-
-      },
-      default:{
-        backgroundColor: '#FF6C00',
-        borderColor: 'transparent'
-
-      },
-
-    }),   
-    
-   
-  },
-
-  textButton: {
-    fontSize: 16,
-    fontWeight: 400,
-    ...Platform.select ({
-      ios: {
-        color:'#f0f800'
-      },
-      android: {
-        color: '#ffffff' 
-      },
-      default: {
-        color: '#ffffff'
-
-      }
-     
-
-    })
-     
-  },
-
-  header: {
-
-  },
-  textHeader: {
-    color: '#212121',
-    fontSize: 30,
-    fontWeight: 500,
-    textAlign: 'center',
-    marginBottom: 33,
-    fontFamily: 'Roboto-Black',
-    
-
-  },
-
-});
