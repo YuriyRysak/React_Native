@@ -1,7 +1,7 @@
 import React, {useState, useEffect} from 'react';
 
 import { Text, View, TextInput, TouchableOpacity, Pressable, Alert } from 'react-native';
-import KeyboardWrapper from '../.expo/components/KeyboardWrapper';
+import KeyboardWrapper from './components/KeyboardWrapper';
 
 
 import { stylesScreen } from "./stylesScreen.js";

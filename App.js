@@ -6,7 +6,7 @@ import * as SplashScreen from "expo-splash-screen";
 import LoginScreen from "./Screens/LoginScreen.jsx";
 import RegistrationScreen from "./Screens/RegistrationScreen.jsx";
 
-import { fonts } from "./.expo/utils/fonts";
+import { fonts } from "./Screens/utils/fonts.js";
 import { View } from "react-native-web";
 
 export default function App() {
@@ -27,11 +27,11 @@ export default function App() {
 	
 	return (
        <>
-      <View>
-	  {/* <LoginScreen/>; */}
+      
+	  <LoginScreen/>;
       <RegistrationScreen/>;
 
-	  </View> 
+	 
       
 		</>
 				
