@@ -1,7 +1,5 @@
-import React, {useState} from 'react';
-import * as Font from 'expo-font';
-import { AppLoading } from 'expo';
-// import { StatusBar } from 'expo-status-bar';
+import React, {useState, useEffect} from 'react';
+
 import { 
   StyleSheet,
   Text,
@@ -13,7 +11,17 @@ import {
   KeyboardAvoidingView,
   Keyboard,
   TouchableWithoutFeedback,
+  Dimensions,
  } from 'react-native';
+
+import * as Font from 'expo-font';
+import { AppLoading } from 'expo';
+
+const initialState= {
+  login: '',
+  mail: '',
+  password: ''
+ }
 
  const loadApplication = async () => {
   await Font.loadAsync({
@@ -24,19 +32,30 @@ import {
 
 
 
- const initialState= {
-  login: '',
-  mail: '',
-  password: ''
- }
 
 
 
 export default function App() {
-  console.log(Platform.OS)
-  const [isShowKeyboard, setIsShowKeyboard] = useState(true);
+  console.log(Platform.OS);
+  const [isShowKeyboard, setIsShowKeyboard] = useState(false);
   const [state, setState] = useState(initialState);
   const [iasReady, setIasReady] = useState(false);
+
+  const [dimensions, setDimensions] = useState(
+    Dimensions.get('window').width - 20 * 2
+  );
+
+  useEffect(() => {
+    const onChange = () => {
+      const width = Dimensions.get("window").width - 20 * 2;
+
+      setDimensions(width);
+    };
+    Dimensions.addEventListener("change", onChange);
+    return () => {
+      Dimensions.removeEventListener("change", onChange);
+    };
+  }, []);
 
   const keyboardHide = () => {
     setIsShowKeyboard(false);
@@ -45,7 +64,7 @@ export default function App() {
     setState(initialState);
   };
 
-  if(!iasReady){
+  if(iasReady){
     return (
       <AppLoading
         startAsync={loadApplication} 
@@ -65,7 +84,8 @@ export default function App() {
                   <KeyboardAvoidingView  
                     behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
                     >
-                    <View style={{...styles.form, marginBottom: isShowKeyboard ? 20 : 86
+                    <View style={{...styles.form, marginBottom: isShowKeyboard ? 20 : 86,
+                           width: dimensions,
                     }}>
                         <View style={styles.header}>
                           <Text style={styles.textHeader}>
