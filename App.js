@@ -7,37 +7,25 @@ import LoginScreen from "./Screens/LoginScreen.jsx";
 import RegistrationScreen from "./Screens/RegistrationScreen.jsx";
 
 import { fonts } from "./Screens/utils/fonts.js";
-import { View } from "react-native-web";
+// import { View } from "react-native-web";
 
 export default function App() {
+  const [fontsLoaded] = useFonts(fonts);
+  useEffect(() => {
+    async function prepare() {
+      await SplashScreen.preventAutoHideAsync();
+    }
+    prepare();
+  }, []);
+  if (!fontsLoaded) {
+    return undefined;
+  } else {
+    SplashScreen.hideAsync();
+  }
 
-	const [fontsLoaded] = useFonts(fonts);
-	useEffect(() => {
-		async function prepare() {
-			await SplashScreen.preventAutoHideAsync();
-		}
-		prepare();
-	}, []);
-	if (!fontsLoaded) {
-		return undefined;
-	} else {
-		SplashScreen.hideAsync();
-	}
-
-	
-	return (
-       <>
-      
-	  <LoginScreen/>;
-      {/* <RegistrationScreen/>; */}
-
-	 
-      
-		</>
-				
-	);
-	
+  return (
+    <>
+      <LoginScreen />;{/* <RegistrationScreen/>; */}
+    </>
+  );
 }
-
-
-
