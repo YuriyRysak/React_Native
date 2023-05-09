@@ -1,31 +1,58 @@
 import { useEffect } from "react";
-
 import { useFonts } from "expo-font";
 import * as SplashScreen from "expo-splash-screen";
 
 import LoginScreen from "./Screens/LoginScreen.jsx";
-import RegistrationScreen from "./Screens/RegistrationScreen.jsx";
-
 import { fonts } from "./Screens/utils/fonts.js";
-// import { View } from "react-native-web";
 
 export default function App() {
   const [fontsLoaded] = useFonts(fonts);
+
   useEffect(() => {
     async function prepare() {
       await SplashScreen.preventAutoHideAsync();
+      SplashScreen.hideAsync();
     }
     prepare();
   }, []);
+
   if (!fontsLoaded) {
-    return undefined;
-  } else {
-    SplashScreen.hideAsync();
+    return "";
   }
 
-  return (
-    <>
-      <LoginScreen />;{/* <RegistrationScreen/>; */}
-    </>
-  );
+  return <LoginScreen />;
 }
+
+// import { useEffect } from "react";
+
+// import { useFonts } from "expo-font";
+// import * as SplashScreen from "expo-splash-screen";
+
+// import LoginScreen from "./Screens/LoginScreen.jsx";
+// // import RegistrationScreen from "./Screens/RegistrationScreen.jsx";
+
+// import { fonts } from "./Screens/utils/fonts.js";
+// // import { View } from "react-native-web";
+
+// export default function App() {
+//   const [fontsLoaded] = useFonts(fonts);
+//   useEffect(() => {
+//     async function prepare() {
+//       await SplashScreen.preventAutoHideAsync();
+//     }
+//     prepare();
+//   }, []);
+//   if (!fontsLoaded) {
+//     return undefined;
+//   } else {
+//     SplashScreen.hideAsync();
+//   }
+
+//   return (
+//     <>
+//       <LoginScreen />;
+//     </>
+//   );
+// }
+
+// /* <RegistrationScreen/>;  */
